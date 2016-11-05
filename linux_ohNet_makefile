@@ -79,22 +79,14 @@ else
     else ifneq (,$(findstring linux,$(gcc_machine)))
       detected_openhome_system = Linux
     endif
-    ifeq ($(gcc_machine),arm-none-linux-gnueabi)
-        ifeq (${detected_openhome_system},Qnap)
+    ifneq (,$(findstring arm,$(gcc_machine)))
+        ifneq (,$(findstring linux-gnueabihf,$(gcc_machine)))
+            detected_openhome_architecture = armhf
+        else ifeq (${detected_openhome_system},Qnap)
             detected_openhome_architecture = x19
         else
             detected_openhome_architecture = armel
         endif
-    endif
-    ifeq ($(gcc_machine),arm-linux-gnueabi)
-        ifeq (${detected_openhome_system},Qnap)
-            detected_openhome_architecture = x19
-        else
-            detected_openhome_architecture = armel
-        endif
-    endif
-    ifeq ($(gcc_machine),arm-linux-gnueabihf)
-      detected_openhome_architecture = armhf
     endif
     ifneq (,$(findstring i686,$(gcc_machine)))
       detected_openhome_architecture = x86
@@ -187,7 +179,7 @@ ifeq ($(platform),IntelMac)
 		openhome_architecture = x64
 	else
 		platform_cflags = -DPLATFORM_MACOSX_GNU -m32 -mmacosx-version-min=10.7
-		platform_linkflags = -m32 -framework CoreFoundation -framework SystemConfiguration		
+		platform_linkflags = -m32 -framework CoreFoundation -framework SystemConfiguration
 		osbuilddir = Mac-x86
 		openhome_architecture = x86
 	endif
@@ -210,7 +202,7 @@ ifeq ($(platform), Core-ppc32)
     osdir = Core
     osbuilddir = Core-ppc32
     objdir = Build/Obj/$(osbuilddir)/$(build_dir)/
-    native_only = yes
+    native_only = yes  
     compiler = ${CROSS_COMPILE}gcc ${CROSS_COMPILEFLAG} -o $(objdir)
     link = ${CROSS_COMPILE}g++ $(platform_linkflags)
     ar = ${CROSS_COMPILE}ar rc $(objdir)
@@ -227,7 +219,7 @@ ifeq ($(platform), Core-armv5)
     osdir = Core
     osbuilddir = Core-armv5
     objdir = Build/Obj/$(osbuilddir)/$(build_dir)/
-    native_only = yes
+    native_only = yes 
     compiler = ${CROSS_COMPILE}gcc ${CROSS_COMPILEFLAG} -o $(objdir)
     link = ${CROSS_COMPILE}g++ $(platform_linkflags)
     ar = ${CROSS_COMPILE}ar rc $(objdir)
@@ -269,7 +261,7 @@ ifneq (,$(findstring $(platform),Vanilla Qnap-x86 Qnap-x19 Linux-ppc32))
 
   # Continuing with the non-Darwin settings...
   objdir = Build/Obj/$(osdir)/$(build_dir)/
-  compiler = ${CROSS_COMPILE}gcc ${CROSS_COMPILEFLAG} -o $(objdir)
+  compiler = ${CROSS_COMPILE}gcc ${CROSS_COMPILEFLAG} -o $(objdir)  
   link = $(version_specific_library_path) ${CROSS_COMPILE}g++ $(platform_linkflags)
   ar = $(version_specific_library_path) ${CROSS_COMPILE}ar rc $(objdir)
 endif
@@ -351,7 +343,7 @@ else
 	dllext = so
 endif
 exeext = elf
-linkoutput = -o 
+linkoutput = -o
 dllprefix = lib
 ifeq ($(MACHINE), Darwin)
 	link_dll = $(version_specific_library_path) clang++ -pthread  $(platform_linkflags) -shared -stdlib=libc++
@@ -361,19 +353,19 @@ endif
 ifeq ($(platform), iOS)
 	csharp = /Developer/MonoTouch/usr/bin/smcs /nologo $(debug_csharp)
 else
-	csharp = dmcs /nologo $(debug_csharp)
+	csharp = mcs /nologo $(debug_csharp)
 endif
 csharpdefines ?=
 publicjavadir = OpenHome/Net/Bindings/Java/
 
 ifeq ($(platform), IntelMac)
-	platform_java_cflags = -Wno-self-assign 
+	platform_java_cflags = -Wno-self-assign
 	includes_jni = -I${MACOSX_SDK}/System/Library/Frameworks/JavaVM.framework/Headers -I${MACOSX_SDK}/usr/include/malloc
 	link_jvm = ${MACOSX-SDK}/System/Library/Frameworks/JavaVM.framework/JavaVM
 	javac = /usr/bin/javac
 	jar = /usr/bin/jar
 else
-	platform_java_cflags = 
+	platform_java_cflags =
 	includes_jni = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
         ifeq ($(platform), Linux-ppc32)
             libjvm_dir ?= $(JAVA_HOME)/jre/lib/ppc/server
@@ -542,9 +534,9 @@ copy_build_includes:
 	$(cp) Os/*.h $(inc_build)/OpenHome
 	$(cp) Os/*.inl $(inc_build)/OpenHome
 
-install : install-libs install-includes
+install : install-pkgconf install-libs install-includes
 
-uninstall : uninstall-libs uninstall-includes
+uninstall : uninstall-pkgconf uninstall-libs uninstall-includes
 
 install-pkgconf : tt
 	@echo "ERROR: no support for (un)install-pckconf yet"
@@ -552,11 +544,11 @@ install-pkgconf : tt
 
 install-libs :
 	$(mkdir) $(installlibdir)
-	$(cp) $(objdir)* $(installlibdir) 
+	$(cp) $(objdir)* $(installlibdir)
 
 install-includes :
 	$(mkdir) $(installincludedir)
-	$(cp) -r $(inc_build)/* $(installincludedir) 
+	$(cp) -r $(inc_build)/* $(installincludedir)
 
 uninstall-pkgconf :
 	@echo "ERROR: no support for (un)install-pckconf yet"
