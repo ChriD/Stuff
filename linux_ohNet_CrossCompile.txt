@@ -1,6 +1,20 @@
 
+### Compile X64
+#!/bin/bash
+sudo update-alternatives --set gcc "/usr/bin/gcc-4.9"
+sudo update-alternatives --set g++ "/usr/bin/g++-4.9"
+export CROSS_COMPILE=/usr/bin/
+export CROSS_COMPILEFLAG=-m64
+export CROSS_LINKFLAGS=-m64
+sudo rm -rf linux_x64/include
+sudo rm -rf linux_x64/lib
+cd /usr/develop/git_ext/ohNet/
+make clean
+make native_only=yes
+make install native_only=yes prefix=/usr/develop/bin/libs/ohNet/linux_x64
 
-###Cross compile ARMV5TE
+
+### Cross compile ARMV5TE
 #!/bin/bash
 sudo update-alternatives --set gcc "/usr/bin/arm-linux-gnueabi-gcc-4.9"
 sudo update-alternatives --set g++ "/usr/bin/arm-linux-gnueabi-g++-4.9"
@@ -17,7 +31,7 @@ make native_only=yes
 make install native_only=yes prefix=/usr/develop/bin/libs/ohNet/linux_ARMV5
 
 
-###Cross compile ARMV7HF
+### Cross compile ARMV7HF
 #!/bin/bash
 sudo update-alternatives --set gcc "/usr/bin/arm-linux-gnueabihf-gcc-4.9"
 sudo update-alternatives --set g++ "/usr/bin/arm-linux-gnueabihf-g++-4.9"
