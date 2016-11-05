@@ -68,6 +68,7 @@ else ifeq ($(freebsd), 1)
     platform = FreeBSD
     detected_openhome_system = FreeBSD
     detected_openhome_architecture = x86
+    #compiler = gcc -o $(objdir)
     compiler = gcc ${CROSS_COMPILEFLAG} -o $(objdir)
     link = ${CROSS_COMPILE}g++ $(platform_linkflags)
     ar = ${CROSS_COMPILE}ar rc $(objdir)
@@ -202,7 +203,8 @@ ifeq ($(platform), Core-ppc32)
     osdir = Core
     osbuilddir = Core-ppc32
     objdir = Build/Obj/$(osbuilddir)/$(build_dir)/
-    native_only = yes  
+    native_only = yes
+    #compiler = ${CROSS_COMPILE}gcc -o $(objdir)
     compiler = ${CROSS_COMPILE}gcc ${CROSS_COMPILEFLAG} -o $(objdir)
     link = ${CROSS_COMPILE}g++ $(platform_linkflags)
     ar = ${CROSS_COMPILE}ar rc $(objdir)
@@ -219,7 +221,8 @@ ifeq ($(platform), Core-armv5)
     osdir = Core
     osbuilddir = Core-armv5
     objdir = Build/Obj/$(osbuilddir)/$(build_dir)/
-    native_only = yes 
+    native_only = yes
+    #compiler = ${CROSS_COMPILE}gcc -o $(objdir)
     compiler = ${CROSS_COMPILE}gcc ${CROSS_COMPILEFLAG} -o $(objdir)
     link = ${CROSS_COMPILE}g++ $(platform_linkflags)
     ar = ${CROSS_COMPILE}ar rc $(objdir)
@@ -237,7 +240,8 @@ ifeq ($(platform), Core-armv6)
     osbuilddir = Core-armv6
     objdir = Build/Obj/$(osbuilddir)/$(build_dir)/
     native_only = yes
-    compiler = ${CROSS_COMPILE}gcc -o $(objdir)
+    #compiler = ${CROSS_COMPILE}gcc -o $(objdir)
+    compiler = ${CROSS_COMPILE}gcc ${CROSS_COMPILEFLAG} -o $(objdir) 
     link = ${CROSS_COMPILE}g++ $(platform_linkflags)
     ar = ${CROSS_COMPILE}ar rc $(objdir)
 endif
@@ -261,7 +265,7 @@ ifneq (,$(findstring $(platform),Vanilla Qnap-x86 Qnap-x19 Linux-ppc32))
 
   # Continuing with the non-Darwin settings...
   objdir = Build/Obj/$(osdir)/$(build_dir)/
-  compiler = ${CROSS_COMPILE}gcc ${CROSS_COMPILEFLAG} -o $(objdir)  
+  compiler = ${CROSS_COMPILE}gcc -o $(objdir)
   link = $(version_specific_library_path) ${CROSS_COMPILE}g++ $(platform_linkflags)
   ar = $(version_specific_library_path) ${CROSS_COMPILE}ar rc $(objdir)
 endif
